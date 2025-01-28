@@ -91,7 +91,7 @@ class OthelloGame:
         
         return bot_score - opp_score
 
-    def minimax(self, depth, maximizing_player, player):
+    def minimax(self, depth, maximizing_player, player, alpha=float('-inf'), beta=float('inf')):
         opponent = 'B' if player == 'W' else 'W'
         valid_moves = self.get_valid_moves(player)
         
@@ -106,8 +106,11 @@ class OthelloGame:
             for move in valid_moves:
                 temp_board = [row[:] for row in self.board]
                 self.make_move(move[0], move[1], player)
-                eval = self.minimax(depth-1, False, opponent)
+                eval = self.minimax(depth-1, False, opponent) 
                 max_eval = max(max_eval, eval)
+                alpha = max(alpha, eval)
+                if alpha >= beta:
+                    break
                 self.board = temp_board
             return max_eval
         else:
@@ -117,6 +120,9 @@ class OthelloGame:
                 self.make_move(move[0], move[1], player)
                 eval = self.minimax(depth-1,  True, opponent)
                 min_eval = min(min_eval, eval)
+                beta = min(beta, eval)
+                if beta <= alpha:
+                    break
                 self.board = temp_board
             return min_eval
         
