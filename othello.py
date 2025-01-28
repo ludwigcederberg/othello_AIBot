@@ -2,6 +2,15 @@ class OthelloGame:
     def __init__(self):
         self.board = self.initialize_board()
         self.current_player = 'B'  # 'B' for Black, 'W' for White
+        
+    position_scores = [[100, -30, 6, 2, 2, 6, -30, 100],
+                        [-30, -50, 0, 0, 0, 0, -50, -30],
+                        [6, 0, 0, 0, 0, 0, 0, 6],
+                        [2, 0, 0, 3, 3, 0, 0, 2],
+                        [2, 0, 0, 3, 3, 0, 0, 2],
+                        [6, 0, 0, 0, 0, 0, 0, 6],
+                        [-30, -50, 0, 0, 0, 0, -50, -30],
+                        [100, -30, 6, 2, 2, 6, -30, 100]]
 
     def initialize_board(self):
         """Initialize the board with the starting position."""
@@ -71,8 +80,15 @@ class OthelloGame:
     
     def evaluate_board(self, player):
         opponent = 'B' if player == 'W' else 'W'
-        bot_score = sum(row.count(player) for row in self.board)
-        opp_score = sum(row.count(opponent) for row in self.board)
+        bot_score = 0
+        opp_score = 0
+        for i in range(len(self.board)):
+            for j in range(len(self.board[0])):
+                if self.board[i][j] == player:
+                    bot_score += self.position_scores[i][j]
+                if self.board[i][j] == opponent:
+                    opp_score += self.position_scores[i][j]
+        
         return bot_score - opp_score
 
     def minimax(self, depth, maximizing_player, player):
