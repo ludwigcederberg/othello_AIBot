@@ -75,13 +75,52 @@ class OthelloGame:
         opp_score = sum(row.count(opponent) for row in self.board)
         return bot_score - opp_score
 
-    def minimax(self, depth, maximizing_player):
-        """
-        Placeholder for the minimax algorithm.
-        To be implemented to determine the best move for the bot.
-        """
-        self.evaluate_board(maximizing_player)
-        pass
+    def minimax(self, depth, maximizing_player, player):
+        opponent = 'B' if player == 'W' else 'W'
+        valid_moves = self.get_valid_moves(player)
+        
+        if depth == 0 or self.is_game_over():
+            return self.evaluate_board(player)
+        
+        if not valid_moves:
+            return self.minimax(depth-1, not maximizing_player, opponent)
+        
+        if maximizing_player:
+            max_eval = float('-inf')
+            for move in valid_moves:
+                temp_board = [row[:] for row in self.board]
+                self.make_move(move[0], move[1], player)
+                eval = self.minimax(depth-1, False, opponent)
+                max_eval = max(max_eval, eval)
+                self.board = temp_board
+            return max_eval
+        else:
+            min_eval = float('inf')
+            for move in valid_moves:
+                temp_board = [row[:] for row in self.board]
+                self.make_move(move[0], move[1], player)
+                eval = self.minimax(depth-1,  True, opponent)
+                min_eval = min(min_eval, eval)
+                self.board = temp_board
+            return min_eval
+        
+    def get_best_move(self, depth):
+        best_move = None
+        best_score = float('-inf')
+        valid_moves = self.get_valid_moves('W')
+        
+        for move in valid_moves:
+            temp_board = [row[:] for row in self.board]
+            self.make_move(move[0], move[1], 'W')
+            score = self.minimax(depth-1, False, 'B')
+            self.board = temp_board
+            
+            if score > best_score:
+                best_score = score
+                best_move = move
+                
+        return best_move[0], best_move[1]
+            
     
             
         
@@ -106,14 +145,27 @@ class OthelloGame:
                     print("Invalid move. Try again.")
             else:  # Bot's turn
                 print(f"{self.current_player}'s turn (Bot).")
-                # Placeholder for bot's move using minimax
-                row, col = valid_moves[0]  # Temporary: choosing the first valid move
-                #row, col = self.minimax(0, maximizing_player=True)
-                self.make_move(row, col, self.current_player)
+                best_move = self.get_best_move(4)
+                if best_move:  
+                    row, col = best_move
+                    self.make_move(row, col, self.current_player)
+                else:
+                    print("No valid moves for the bot. Skipping turn.")
                 self.current_player = 'B' if self.current_player == 'W' else 'W'
 
+
         self.print_board()
-        print("Game over!")
+        bot_score = sum(row.count('W') for row in self.board)
+        opp_score = sum(row.count('B') for row in self.board)
+        
+        if bot_score > opp_score:
+            print("Game over! Bot won!")
+        elif bot_score < opp_score:
+            print("Game over! Human won!")
+        else:
+            print("Game over! It's a tie!")
+        
+        
 
 # Example of running the game
 if __name__ == "__main__":
