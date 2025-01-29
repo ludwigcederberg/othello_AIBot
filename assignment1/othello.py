@@ -176,9 +176,23 @@ class OthelloGame:
 
             if self.current_player == self.human_player:  
                 print(f"Your turn ({self.current_player}). Valid moves: {valid_moves}")
-                row, col = map(int, input("Enter move (row col): ").split())
+                
+                usr_input = input("Enter move (row col): ").split()
+                
+                
+                
+                if len(usr_input) != 2:
+                    print("Invalid choice, try again")
+                    continue
+                
+
+                
+                row, col = map(int, usr_input)
                 if (row, col) in valid_moves:
                     self.make_move(row, col, self.current_player)
+                else:
+                    print("Invalid choice, try again")
+                    continue
             else:  
                 print(f"Bot's turn ({self.bot_player}).")
                 row, col = self.get_best_move(4)
