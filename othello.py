@@ -1,7 +1,7 @@
 class OthelloGame:
     def __init__(self):
         self.board = self.initialize_board()
-        self.current_player = 'B'  # 'B' for Black, 'W' for White
+        self.current_player = 'B' 
         
     position_scores = [[100, -30, 6, 2, 2, 6, -30, 100],
                         [-30, -50, 0, 0, 0, 0, -50, -30],
@@ -148,7 +148,6 @@ class OthelloGame:
         
 
     def play(self):
-        """Main game loop."""
         while not self.is_game_over():
             self.print_board()
             valid_moves = self.get_valid_moves(self.current_player)
@@ -157,7 +156,7 @@ class OthelloGame:
                 self.current_player = 'B' if self.current_player == 'W' else 'W'
                 continue
 
-            if self.current_player == 'B':  # Human player (can be swapped for bot)
+            if self.current_player == 'B': 
                 print(f"{self.current_player}'s turn. Valid moves: {valid_moves}")
                 row, col = map(int, input("Enter your move (row col): ").split())
                 if (row, col) in valid_moves:
